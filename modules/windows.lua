@@ -132,11 +132,15 @@ function focusScreen(screen)
       window.orderedWindows(),
       fnutils.partial(isInScreen, screen))
   local windowToFocus = #windows > 0 and windows[1] or window.desktop()
-  windowToFocus:focus()
+  windowToFocus:focus()  
 
   -- move cursor to center of screen
   local pt = geometry.rectMidPoint(screen:fullFrame())
   mouse.setAbsolutePosition(pt)
+
+  if windowToFocus == window.desktop() then
+      eventtap.leftClick(pt)
+  end
 end
 
 -- maximized active window and move to selected monitor
@@ -155,7 +159,7 @@ end
 
 -- move cursor to monitor 1 and maximize the window
 hotkey.bind(CAS, "1", function()
-  local win = window.focusedWindow()
+local win = window.focusedWindow()
   moveto(win, 1)
 end)
 
@@ -167,4 +171,20 @@ end)
 hotkey.bind(CAS, "3", function()
   local win = window.focusedWindow()
   moveto(win, 3)
+end)
+
+-- moniter force move
+hotkey.bind(option, "D", function ()
+    local screen = mouse.getCurrentScreen();
+    local nextScreen = screen:next();
+    local rect = nextScreen:fullFrame();
+    local center = geometry.rectMidPoint(rect);
+    mouse.absolutePosition(center);
+    eventtap.leftClick(center);
+end)
+
+
+-- moniter force move
+hotkey.bind(option, "C", function ()
+  eventtap.leftClick(mouse.getRelativePosition());
 end)
