@@ -2,10 +2,10 @@ local hotkey = require "hs.hotkey"
 local caffeinate = require "hs.caffeinate"
 local audiodevice = require "hs.audiodevice"
 
-hotkey.bind(hyper, "L", function()
-  caffeinate.lockScreen()
-  -- caffeinate.startScreensaver()
-end)
+-- hotkey.bind(hyper, "L", function()
+--   caffeinate.lockScreen()
+--   -- caffeinate.startScreensaver()
+-- end)
 
 -- mute on sleep
 function muteOnWake(eventType)
