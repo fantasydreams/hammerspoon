@@ -26,7 +26,7 @@ applist = {
 }
 
 fnutils.each(applist, function(entry)
-    hotkey.bind({'ctrl', 'alt', 'cmd'}, entry.shortcut, entry.appname, function()
+    hotkey.bind(CA, entry.shortcut, entry.appname, function()
         application.launchOrFocus(entry.appname)
         -- toggle_application(applist[i].appname)
     end)
