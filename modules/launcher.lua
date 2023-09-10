@@ -18,6 +18,10 @@ applist = {
     {shortcut = 'P',appname = 'System Preferences'},
     {shortcut = 'X',appname = 'wechat'},
     {shortcut = 'L',appname = '网易有道翻译'},
+    {shortcut = 'A',appname = 'Activity Monitor'},
+    {shortcut = 'S',appname = 'Launchpad'},
+    {shortcut = 'M',appname = 'NeteaseMusic'},
+    {shortcut = 'Q',appname = 'QQMusic'}, 
 }
 
 fnutils.each(applist, function(entry)
