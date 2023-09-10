@@ -22,6 +22,7 @@ applist = {
     {shortcut = 'S',appname = 'Launchpad'},
     {shortcut = 'M',appname = 'NeteaseMusic'},
     {shortcut = 'Q',appname = 'QQMusic'}, 
+    {shortcut = 'R',appname = 'CLion'}, 
 }
 
 fnutils.each(applist, function(entry)
