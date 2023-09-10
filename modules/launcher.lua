@@ -17,6 +17,7 @@ applist = {
     {shortcut = 'N',appname = '有道云笔记'},
     {shortcut = 'P',appname = 'System Preferences'},
     {shortcut = 'X',appname = 'wechat'},
+    {shortcut = 'L',appname = '网易有道翻译'},
 }
 
 fnutils.each(applist, function(entry)
