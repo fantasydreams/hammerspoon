@@ -8,21 +8,22 @@ local fnutils = require "hs.fnutils"
 grid.setMargins({0, 0})
 
 applist = {
-    {shortcut = 'V',appname = 'Visual Studio Code'},
-    {shortcut = 'C',appname = 'Google Chrome'},
-    {shortcut = 'T',appname = 'WeTERM'},
-    {shortcut = 'F',appname = 'Finder'},
-    {shortcut = 'D',appname = 'Dash'},
-    {shortcut = 'W',appname = '企业微信'},
-    {shortcut = 'N',appname = '有道云笔记'},
-    {shortcut = 'P',appname = 'System Preferences'},
-    {shortcut = 'X',appname = 'wechat'},
-    {shortcut = 'L',appname = '网易有道翻译'},
-    {shortcut = 'A',appname = 'Activity Monitor'},
-    {shortcut = 'S',appname = 'Launchpad'},
-    {shortcut = 'M',appname = 'NeteaseMusic'},
-    {shortcut = 'Q',appname = 'QQMusic'}, 
-    {shortcut = 'R',appname = 'CLion'}, 
+    {shortcut = 'V',appname = 'Visual Studio Code'}, -- vscode V
+    {shortcut = 'C',appname = 'Google Chrome'},  -- Chrome C
+    {shortcut = 'T',appname = 'WeTERM'},    -- Terminal T
+    {shortcut = 'F',appname = 'Finder'},    -- Finder   F
+    {shortcut = 'D',appname = 'Dash'},      -- Dash     D
+    {shortcut = 'W',appname = '企业微信'},      -- Wework    W
+    {shortcut = 'N',appname = '有道云笔记'},    -- Note      N
+    {shortcut = 'P',appname = 'System Preferences'},    -- Preference P
+    {shortcut = 'X',appname = 'wechat'},    -- WeXin X
+    {shortcut = 'L',appname = '网易有道翻译'},  -- Lexicon L
+    {shortcut = 'A',appname = 'Activity Monitor'},  -- Activity A
+    {shortcut = 'S',appname = 'Launchpad'},     -- System App Launch S
+    {shortcut = 'M',appname = 'NeteaseMusic'},  -- Music M
+    {shortcut = 'Q',appname = 'QQMusic'},   -- QQMusic Q
+    {shortcut = 'B',appname = 'CLion'},     -- Buider B
+    {shortcut = 'I',appname = 'QQ'},        -- IM I
 }
 
 fnutils.each(applist, function(entry)
