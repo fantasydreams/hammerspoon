@@ -108,7 +108,7 @@ hotkey.bind(CAS, "Right", function()
   window.focusedWindow():moveOneScreenEast()
 end)
 
--- move cursor to previous monitor
+-- move cursor to previous monitor, more effective than option + d
 hotkey.bind(CCS, "Left", function ()
   focusScreen(window.focusedWindow():screen():previous())
 end)
