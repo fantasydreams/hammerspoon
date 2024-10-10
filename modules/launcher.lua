@@ -10,7 +10,6 @@ grid.setMargins({0, 0})
 applist = {
     {shortcut = 'V',appname = 'Visual Studio Code'}, -- vscode V
     {shortcut = 'C',appname = 'Google Chrome'},  -- Chrome C
-    {shortcut = 'T',appname = 'WeTERM'},    -- Terminal T
     {shortcut = 'F',appname = 'Finder'},    -- Finder   F
     {shortcut = 'D',appname = 'Dash'},      -- Dash     D
     {shortcut = 'W',appname = '企业微信'},      -- Wework    W
@@ -22,8 +21,11 @@ applist = {
     {shortcut = 'S',appname = 'Launchpad'},     -- System App Launch S
     {shortcut = 'M',appname = 'NeteaseMusic'},  -- Music M
     {shortcut = 'Q',appname = 'QQMusic'},   -- QQMusic Q
-    {shortcut = 'B',appname = 'CLion'},     -- Buider B
     {shortcut = 'I',appname = 'QQ'},        -- IM I
+    {shortcut = 'R',appname = 'Microsoft Remote Desktop'},
+    {shortcut = 'T',appname = 'Terminal'},
+    {shortcut = 'K',appname = 'iTerm'},
+    {shortcut = 'A',appname = 'iphone Mirroring'}
 }
 
 fnutils.each(applist, function(entry)
