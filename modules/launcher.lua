@@ -14,7 +14,7 @@ applist = {
     {shortcut = 'D',appname = 'Dash'},      -- Dash     D
     {shortcut = 'W',appname = '企业微信'},      -- Wework    W
     {shortcut = 'N',appname = '有道云笔记'},    -- Note      N
-    {shortcut = 'P',appname = 'System Preferences'},    -- Preference P
+    {shortcut = 'P',appname = 'Proxyman'},    -- porxy postman
     {shortcut = 'X',appname = 'wechat'},    -- WeXin X
     {shortcut = 'L',appname = '网易有道翻译'},  -- Lexicon L
     {shortcut = 'A',appname = 'Activity Monitor'},  -- Activity A
@@ -22,10 +22,10 @@ applist = {
     {shortcut = 'M',appname = 'NeteaseMusic'},  -- Music M
     {shortcut = 'Q',appname = 'QQMusic'},   -- QQMusic Q
     {shortcut = 'I',appname = 'QQ'},        -- IM I
-    {shortcut = 'R',appname = 'Microsoft Remote Desktop'},
-    {shortcut = 'T',appname = 'Terminal'},
-    {shortcut = 'K',appname = 'iTerm'},
-    {shortcut = 'A',appname = 'iphone Mirroring'}
+    {shortcut = 'R',appname = 'Microsoft Remote Desktop'}, -- remote desktop
+    {shortcut = 'T',appname = 'Terminal'}, -- mac os inner intermal
+    {shortcut = 'K',appname = 'iTerm'},  -- i itermal
+    {shortcut = 'A',appname = 'iphone Mirroring'}, -- apple iphone mirrioring
 }
 
 fnutils.each(applist, function(entry)
