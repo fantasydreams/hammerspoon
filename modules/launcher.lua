@@ -26,6 +26,7 @@ applist = {
     {shortcut = 'R',appname = 'Microsoft Remote Desktop'}, -- remote desktop R
     {shortcut = 'T',appname = 'Terminal'}, -- mac os inner intermal T
     {shortcut = 'K',appname = 'iTerm'},  -- i itermal K
+    {shortcut = 'B',appname = 'Skim'},  -- Books B
 
 }
 
