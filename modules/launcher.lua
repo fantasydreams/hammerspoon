@@ -19,11 +19,11 @@ applist = {
     {shortcut = 'L',appname = '网易有道翻译'},  -- Lexicon L
     -- {shortcut = 'A',appname = 'Activity Monitor'},  -- Activity A
     {shortcut = 'A',appname = 'Proxyman'},  -- proxyman A (agent)
-    {shortcut = 'S',appname = 'Launchpad'},     -- System App Launch S
+    -- {shortcut = 'S',appname = 'Launchpad'},     -- System App Launch S
     {shortcut = 'M',appname = 'NeteaseMusic'},  -- Music M
     {shortcut = 'Q',appname = 'QQMusic'},   -- QQMusic Q
     {shortcut = 'I',appname = 'QQ'},        -- IM I
-    {shortcut = 'R',appname = 'Microsoft Remote Desktop'}, -- remote desktop R
+    {shortcut = 'R',appname = 'UURemote'}, -- remote desktop R
     {shortcut = 'T',appname = 'Terminal'}, -- mac os inner intermal T
     {shortcut = 'K',appname = 'iTerm'},  -- i itermal K
     {shortcut = 'B',appname = 'Skim'},  -- Books B
