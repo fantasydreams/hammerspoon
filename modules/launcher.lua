@@ -17,7 +17,7 @@ applist = {
     {shortcut = 'P',appname = 'Postman'},    -- postman P
     {shortcut = 'X',appname = 'wechat'},    -- WeXin X
     {shortcut = 'L',appname = '网易有道翻译'},  -- Lexicon L
-    -- {shortcut = 'A',appname = 'Activity Monitor'},  -- Activity A
+    {shortcut = 'A',appname = 'Activity Monitor'},  -- Activity A
     {shortcut = 'A',appname = 'Proxyman'},  -- proxyman A (agent)
     -- {shortcut = 'S',appname = 'Launchpad'},     -- System App Launch S
     {shortcut = 'M',appname = 'NeteaseMusic'},  -- Music M
