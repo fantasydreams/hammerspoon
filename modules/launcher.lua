@@ -9,6 +9,7 @@ grid.setMargins({0, 0})
 
 applist = {
     {shortcut = 'V',appname = 'Visual Studio Code'}, -- vscode V
+    {shortcut = 'S',appname = 'Cursor'}, -- Cursor S
     {shortcut = 'C',appname = 'Google Chrome'},  -- Chrome C
     {shortcut = 'F',appname = 'Finder'},    -- Finder   F
     {shortcut = 'D',appname = 'Dash'},      -- Dash     D
