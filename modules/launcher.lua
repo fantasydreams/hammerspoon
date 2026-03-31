@@ -8,27 +8,24 @@ local fnutils = require "hs.fnutils"
 grid.setMargins({0, 0})
 
 applist = {
-    {shortcut = 'V',appname = 'Visual Studio Code'}, -- vscode V
-    {shortcut = 'S',appname = 'Cursor'}, -- Cursor S
-    {shortcut = 'C',appname = 'Google Chrome'},  -- Chrome C
-    {shortcut = 'F',appname = 'Finder'},    -- Finder   F
-    {shortcut = 'D',appname = 'Dash'},      -- Dash     D
-    {shortcut = 'W',appname = '企业微信'},      -- Wework    W
-    {shortcut = 'N',appname = '有道云笔记'},    -- Note      N
-    {shortcut = 'P',appname = 'Postman'},    -- postman P
-    {shortcut = 'X',appname = 'wechat'},    -- WeXin X
-    {shortcut = 'L',appname = '网易有道翻译'},  -- Lexicon L
     {shortcut = 'A',appname = 'Activity Monitor'},  -- Activity A
-    -- {shortcut = 'A',appname = 'Proxyman'},  -- proxyman A (agent)
-    -- {shortcut = 'S',appname = 'Launchpad'},     -- System App Launch S
-    {shortcut = 'M',appname = 'NeteaseMusic'},  -- Music M
-    {shortcut = 'Q',appname = 'QQMusic'},   -- QQMusic Q
+    {shortcut = 'B',appname = 'CodeBuddy CN'},  -- codebuddy B
+    {shortcut = 'C',appname = 'Google Chrome'},  -- Chrome C
+    {shortcut = 'D',appname = 'Dash'},      -- Dash     D
+    {shortcut = 'F',appname = 'Finder'},    -- Finder   F
     {shortcut = 'I',appname = 'QQ'},        -- IM I
-    {shortcut = 'R',appname = 'UURemote'}, -- remote desktop R
-    {shortcut = 'T',appname = 'Terminal'}, -- mac os inner intermal T
     {shortcut = 'K',appname = 'iTerm'},  -- i itermal K
-    {shortcut = 'B',appname = 'Skim'},  -- Books B
-
+    {shortcut = 'L',appname = '网易有道翻译'},  -- Lexicon L
+    {shortcut = 'M',appname = 'NeteaseMusic'},  -- Music M
+    {shortcut = 'N',appname = 'Obsidian'},    -- Note      N
+    {shortcut = 'P',appname = 'Postman'},    -- postman P
+    {shortcut = 'Q',appname = 'QQMusic'},   -- QQMusic Q
+    {shortcut = 'R',appname = 'UURemote'}, -- remote desktop R
+    {shortcut = 'S',appname = 'Cursor'}, -- Cursor S
+    {shortcut = 'T',appname = 'Terminal'}, -- mac os inner intermal T
+    {shortcut = 'V',appname = 'Visual Studio Code'}, -- vscode V
+    {shortcut = 'W',appname = '企业微信'},      -- Wework    W
+    {shortcut = 'X',appname = 'wechat'},    -- WeXin X
 }
 
 fnutils.each(applist, function(entry)
