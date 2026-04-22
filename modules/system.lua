@@ -1,4 +1,3 @@
-local hotkey = require "hs.hotkey"
 local caffeinate = require "hs.caffeinate"
 local audiodevice = require "hs.audiodevice"
 
@@ -8,11 +7,14 @@ local audiodevice = require "hs.audiodevice"
 -- end)
 
 -- mute on sleep
-function muteOnWake(eventType)
+local function muteOnWake(eventType)
   if (eventType == caffeinate.watcher.systemDidWake) then
     local output = audiodevice.defaultOutputDevice()
-    output:setMuted(true)
+    if output then
+      output:setMuted(true)
+    end
   end
 end
+-- 保留到全局, 避免被 GC 回收导致 watcher 失效
 caffeinateWatcher = caffeinate.watcher.new(muteOnWake)
 caffeinateWatcher:start()

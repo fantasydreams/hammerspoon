@@ -1,190 +1,186 @@
 -- window management
-local application = require "hs.application"
-local hotkey = require "hs.hotkey"
-local window = require "hs.window"
-local layout = require "hs.layout"
-local grid = require "hs.grid"
-local hints = require "hs.hints"
-local screen = require "hs.screen"
-local alert = require "hs.alert"
-local fnutils = require "hs.fnutils"
+local hotkey   = require "hs.hotkey"
+local window   = require "hs.window"
+local layout   = require "hs.layout"
+local hints    = require "hs.hints"
+local screen   = require "hs.screen"
+local alert    = require "hs.alert"
+local fnutils  = require "hs.fnutils"
 local geometry = require "hs.geometry"
-local mouse = require "hs.mouse"
+local mouse    = require "hs.mouse"
 local eventtap = require "hs.eventtap"
 
 -- default 0.2
 window.animationDuration = 0
 
--- left half
-hotkey.bind(CCA, "Left", function()
-  if window.focusedWindow() then
-    window.focusedWindow():moveToUnit(layout.left50)
+-- 通用: 对焦点窗口执行操作, 无焦点窗口时弹出提示
+local function withFocused(fn)
+  local w = window.focusedWindow()
+  if w then
+    fn(w)
   else
     alert.show("No active window")
   end
-end)
+end
 
+-- left half
+hotkey.bind(CCA, "Left",  function() withFocused(function(w) w:moveToUnit(layout.left50)  end) end)
 -- right half
-hotkey.bind(CCA, "Right", function()
-  window.focusedWindow():moveToUnit(layout.right50)
-end)
-
+hotkey.bind(CCA, "Right", function() withFocused(function(w) w:moveToUnit(layout.right50) end) end)
 -- top half
-hotkey.bind(CCA, "Up", function()
-  window.focusedWindow():moveToUnit'[0,0,100,50]'
-end)
-
+hotkey.bind(CCA, "Up",    function() withFocused(function(w) w:moveToUnit'[0,0,100,50]'   end) end)
 -- bottom half
-hotkey.bind(CCA, "Down", function()
-  window.focusedWindow():moveToUnit'[0,50,100,100]'
-end)
-
--- left top quarter
--- hotkey.bind(CAS, "Left", function()
---   window.focusedWindow():moveToUnit'[0,0,50,50]'
--- end)
-
--- -- right bottom quarter
--- hotkey.bind(CAS, "Right", function()
---   window.focusedWindow():moveToUnit'[50,50,100,100]'
--- end)
-
--- -- right top quarter
--- hotkey.bind(CAS, "Up", function()
---   window.focusedWindow():moveToUnit'[50,0,100,50]'
--- end)
-
--- -- left bottom quarter
--- hotkey.bind(CAS, "Down", function()
---   window.focusedWindow():moveToUnit'[0,50,50,100]'
--- end)
-
+hotkey.bind(CCA, "Down",  function() withFocused(function(w) w:moveToUnit'[0,50,100,100]' end) end)
 -- full screen
-hotkey.bind(CCA, 'F', function() 
-  window.focusedWindow():toggleFullScreen()
+hotkey.bind(CCA, "F",     function() withFocused(function(w) w:toggleFullScreen()         end) end)
+-- center window
+hotkey.bind(CCA, "C",     function() withFocused(function(w) w:centerOnScreen()           end) end)
+
+-- 记忆窗口原始 frame, 用于最大化切换
+local frameCache = {}
+
+-- 在窗口销毁时清理 frameCache, 防止长期运行后内存堆积
+local wfDestroy = window.filter.new()
+wfDestroy:subscribe(window.filter.windowDestroyed, function(w)
+  if w and w.id and w:id() then frameCache[w:id()] = nil end
 end)
 
--- center window
-hotkey.bind(CCA, 'C', function() 
-  window.focusedWindow():centerOnScreen()
-end)
+local function toggleMaximize(win)
+  local id = win:id()
+  if frameCache[id] then
+    win:setFrame(frameCache[id])
+    frameCache[id] = nil
+  else
+    frameCache[id] = win:frame()
+    win:maximize()
+  end
+end
 
 -- maximize window
-hotkey.bind(CCA, 'M', function() toggle_maximize() end)
-
--- defines for window maximize toggler
-local frameCache = {}
--- toggle a window between its normal size, and being maximized
-function toggle_maximize()
-    local win = window.focusedWindow()
-    if frameCache[win:id()] then
-        win:setFrame(frameCache[win:id()])
-        frameCache[win:id()] = nil
-    else
-        frameCache[win:id()] = win:frame()
-        win:maximize()
-    end
-end
+hotkey.bind(CCA, "M", function() withFocused(toggleMaximize) end)
 
 -- display a keyboard hint for switching focus to each window
-hotkey.bind(CAS, '/', function()
-    hints.windowHints()
-    -- Display current application window
-    -- hints.windowHints(hs.window.focusedWindow():application():allWindows())
-end)
+hotkey.bind(CAS, "/", function() hints.windowHints() end)
 
 -- switch active window
-hotkey.bind(CAS, "H", function()
-  window.switcher.nextWindow()
-end)
+hotkey.bind(CAS, "H", function() window.switcher.nextWindow() end)
 
--- move active window to previous monitor
-hotkey.bind(CAS, "Left", function()
-  window.focusedWindow():moveOneScreenWest()
-end)
+-- move active window to previous/next monitor
+hotkey.bind(CAS, "Left",  function() withFocused(function(w) w:moveOneScreenWest() end) end)
+hotkey.bind(CAS, "Right", function() withFocused(function(w) w:moveOneScreenEast() end) end)
 
--- move active window to next monitor
-hotkey.bind(CAS, "Right", function()
-  window.focusedWindow():moveOneScreenEast()
-end)
+---------------------------------------------------------
+-- 跨屏幕光标切换 (带记忆坐标)
+---------------------------------------------------------
 
--- move cursor to previous monitor, more effective than option + d
-hotkey.bind(CCS, "Left", function ()
-  focusScreen(window.focusedWindow():screen():previous())
-end)
+-- 记忆每块屏幕上次离开时鼠标所在的坐标, key 为 screen 的 UUID
+local lastCursorPos = {}
 
--- move cursor to next monitor
-hotkey.bind(CCS, "Right", function ()
-  focusScreen(window.focusedWindow():screen():next())
-end)
-
-
---Predicate that checks if a window belongs to a screen
-function isInScreen(screen, win)
-  return win:screen() == screen
+-- 判断坐标点是否落在指定屏幕的 frame 范围内
+local function pointInScreen(pt, scr)
+  local f = scr:fullFrame()
+  return pt.x >= f.x and pt.x <= (f.x + f.w)
+     and pt.y >= f.y and pt.y <= (f.y + f.h)
 end
 
-function focusScreen(screen)
-  --Get windows within screen, ordered from front to back.
-  --If no windows exist, bring focus to desktop. Otherwise, set focus on
-  --front-most application window.
-  local windows = fnutils.filter(
-      window.orderedWindows(),
-      fnutils.partial(isInScreen, screen))
-  local windowToFocus = #windows > 0 and windows[1] or window.desktop()
-  windowToFocus:focus()  
-
-  -- move cursor to center of screen
-  local pt = geometry.rectMidPoint(screen:fullFrame())
-  mouse.setAbsolutePosition(pt)
-
-  if windowToFocus == window.desktop() then
-      eventtap.leftClick(pt)
+-- 记录当前鼠标所在屏幕的坐标, 切屏前调用
+local function rememberCurrentCursor()
+  local pt = mouse.absolutePosition()
+  local curScreen = mouse.getCurrentScreen()
+  if curScreen and pt then
+    lastCursorPos[curScreen:getUUID()] = pt
   end
 end
 
--- maximized active window and move to selected monitor
-moveto = function(win, n)
+-- 屏幕变动(拔插/分辨率变化)时, 清理已不存在的 UUID
+screenWatcher = screen.watcher.new(function()
+  local alive = {}
+  for _, s in ipairs(screen.allScreens()) do alive[s:getUUID()] = true end
+  for uuid in pairs(lastCursorPos) do
+    if not alive[uuid] then lastCursorPos[uuid] = nil end
+  end
+end)
+screenWatcher:start()
+
+local function focusScreen(targetScreen)
+  if not targetScreen then return end
+
+  -- 切到新屏幕前, 先记下当前屏幕的鼠标位置
+  rememberCurrentCursor()
+
+  -- 找目标屏幕上最前面的窗口
+  local windows = fnutils.filter(window.orderedWindows(), function(w)
+    return w:screen() == targetScreen
+  end)
+  local windowToFocus = #windows > 0 and windows[1] or window.desktop()
+  windowToFocus:focus()
+
+  -- 目标屏幕若有记忆坐标且仍在屏幕内, 用记忆坐标; 否则回退到屏幕中心
+  local remembered = lastCursorPos[targetScreen:getUUID()]
+  local pt
+  if remembered and pointInScreen(remembered, targetScreen) then
+    pt = remembered
+  else
+    pt = geometry.rectMidPoint(targetScreen:fullFrame())
+  end
+  mouse.absolutePosition(pt)
+
+  -- focus 到桌面时, 模拟一次左键点击确保焦点生效
+  if windowToFocus == window.desktop() then
+    eventtap.leftClick(pt)
+  end
+end
+
+-- 按索引定位光标到指定屏幕
+local function focusScreenByIndex(n)
   local screens = screen.allScreens()
   if n > #screens then
-    alert.show("Only " .. #screens .. " monitors ")
-  else
-    local toWin = screen.allScreens()[n]:name()
-    alert.show("Move " .. win:application():name() .. " to " .. toWin)
-
-    layout.apply({{nil, win:title(), toWin, layout.maximized, nil, nil}})
-    
+    alert.show("Only " .. #screens .. " monitors")
+    return
   end
+  focusScreen(screens[n])
 end
 
--- move cursor to monitor 1 and maximize the window
-hotkey.bind(CAS, "1", function()
-local win = window.focusedWindow()
-  moveto(win, 1)
+-- 光标跳到上/下一块显示器 (基于鼠标所在屏幕, 不再依赖 focusedWindow)
+hotkey.bind(CCS, "Left",  function()
+  local cur = mouse.getCurrentScreen()
+  if cur then focusScreen(cur:previous()) end
+end)
+hotkey.bind(CCS, "Right", function()
+  local cur = mouse.getCurrentScreen()
+  if cur then focusScreen(cur:next()) end
 end)
 
-hotkey.bind(CAS, "2", function()
-  local win = window.focusedWindow()
-  moveto(win, 2)
+-- option + D: 光标跳到下一块显示器
+hotkey.bind(option, "D", function()
+  local cur = mouse.getCurrentScreen()
+  if cur then focusScreen(cur:next()) end
 end)
 
-hotkey.bind(CAS, "3", function()
-  local win = window.focusedWindow()
-  moveto(win, 3)
-end)
+---------------------------------------------------------
+-- 将窗口最大化并移动到指定屏幕
+---------------------------------------------------------
 
--- moniter force move
-hotkey.bind(option, "D", function ()
-    local screen = mouse.getCurrentScreen();
-    local nextScreen = screen:next();
-    local rect = nextScreen:fullFrame();
-    local center = geometry.rectMidPoint(rect);
-    mouse.absolutePosition(center);
-    eventtap.leftClick(center);
-end)
+local function moveWindowToScreen(win, n)
+  local screens = screen.allScreens()
+  if n > #screens then
+    alert.show("Only " .. #screens .. " monitors")
+    return
+  end
+  local target = screens[n]
+  alert.show("Move " .. win:application():name() .. " to " .. target:name())
+  win:moveToScreen(target)
+  win:maximize()
+end
 
+-- 批量注册 option + 1/2/3 (光标跳转), CAS + 1/2/3 (窗口跨屏最大化)
+for i = 1, 3 do
+  local key = tostring(i)
+  hotkey.bind(option, key, function() focusScreenByIndex(i) end)
+  hotkey.bind(CAS,    key, function() withFocused(function(w) moveWindowToScreen(w, i) end) end)
+end
 
--- moniter force move
-hotkey.bind(option, "C", function ()
-  eventtap.leftClick(mouse.getRelativePosition());
+-- option + C: 在当前鼠标位置原地模拟一次左键点击
+hotkey.bind(option, "C", function()
+  eventtap.leftClick(mouse.absolutePosition())
 end)
