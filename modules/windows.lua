@@ -173,8 +173,8 @@ local function moveWindowToScreen(win, n)
   win:maximize()
 end
 
--- 批量注册 option + 1/2/3 (光标跳转), CAS + 1/2/3 (窗口跨屏最大化)
-for i = 1, 3 do
+-- 批量注册 option + 1/2/3/4 (光标跳转), CAS + 1/2/3/4 (窗口跨屏最大化)
+for i = 1, 4 do
   local key = tostring(i)
   hotkey.bind(option, key, function() focusScreenByIndex(i) end)
   hotkey.bind(CAS,    key, function() withFocused(function(w) moveWindowToScreen(w, i) end) end)
