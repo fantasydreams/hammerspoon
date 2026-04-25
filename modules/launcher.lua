@@ -33,7 +33,7 @@ local function showFixedAlert(text, duration)
     fixedAlertCanvas[1] = {
         type = "rectangle",
         action = "fill",
-        fillColor = {red = 0, green = 0, blue = 0, alpha = 0.7},
+        fillColor = {red = 0, green = 0, blue = 0, alpha = 0.85},
         roundedRectRadii = {xRadius = 10, yRadius = 10}
     }
     
@@ -43,10 +43,11 @@ local function showFixedAlert(text, duration)
         textColor = {red = 1, green = 1, blue = 1, alpha = 1},
         textSize = 24,
         textAlignment = "center",
-        textFont = "Arial",
+        textFont = "Helvetica Neue",
         textLineBreak = "truncateTail",
+        textAntialias = true,
         -- 确保文字在画布中完美居中
-        frame = {x = 0, y = (canvasHeight - 24) / 2, w = "100%", h = 24}
+        frame = {x = 0, y = (canvasHeight - 30) / 2, w = "100%", h = 30}
     }
     
     fixedAlertCanvas:level(canvas.windowLevels.overlay)
