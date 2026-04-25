@@ -4,72 +4,13 @@ local fnutils = require "hs.fnutils"
 local canvas = require "hs.canvas"
 local screen = require "hs.screen"
 
--- 固定位置提示画布
-local fixedAlertCanvas = nil
-
--- 显示固定位置提示
+-- 显示固定位置提示（使用Hammerspoon内置alert）
 local function showFixedAlert(text, duration)
-    -- 先清除之前的提示
-    if fixedAlertCanvas then
-        fixedAlertCanvas:delete()
-        fixedAlertCanvas = nil
-    end
+    -- 设置默认duration为2秒
+    duration = duration or 2.0
     
-    -- 获取主屏幕
-    local mainScreen = screen.primaryScreen()
-    local screenFrame = mainScreen:frame()
-    
-    -- 创建画布（居中显示）
-    local canvasWidth = 300
-    local canvasHeight = 60
-    fixedAlertCanvas = canvas.new({
-        x = screenFrame.x + (screenFrame.w - canvasWidth) / 2,
-        y = screenFrame.y + (screenFrame.h - canvasHeight) / 2,
-        w = canvasWidth,
-        h = canvasHeight
-    })
-    
-    -- 设置画布样式
-    fixedAlertCanvas[1] = {
-        type = "rectangle",
-        action = "fill",
-        fillColor = {red = 0, green = 0, blue = 0, alpha = 0.85},
-        roundedRectRadii = {xRadius = 10, yRadius = 10}
-    }
-    
-    fixedAlertCanvas[2] = {
-        type = "text",
-        text = text,
-        textColor = {red = 1, green = 1, blue = 1, alpha = 1},
-        textSize = 24,
-        textAlignment = "center",
-        textFont = "Helvetica Neue",
-        textLineBreak = "truncateTail",
-        textAntialias = true,
-        -- 确保文字在画布中完美居中
-        frame = {x = 0, y = (canvasHeight - 30) / 2, w = "100%", h = 30}
-    }
-    
-    fixedAlertCanvas:level(canvas.windowLevels.overlay)
-    fixedAlertCanvas:show()
-    
-    -- 设置定时器自动隐藏
-    if duration and duration > 0 then
-        hs.timer.doAfter(duration, function()
-            if fixedAlertCanvas then
-                fixedAlertCanvas:delete()
-                fixedAlertCanvas = nil
-            end
-        end)
-    end
-end
-
--- 清除固定提示
-local function clearFixedAlert()
-    if fixedAlertCanvas then
-        fixedAlertCanvas:delete()
-        fixedAlertCanvas = nil
-    end
+    -- 使用hs.alert显示通知（更简单可靠）
+    hs.alert.show(text, duration)
 end
 
 local applist = {
@@ -96,6 +37,6 @@ local applist = {
 fnutils.each(applist, function(entry)
     hotkey.bind(CA, entry.shortcut, function()
         application.launchOrFocus(entry.appname)
-        showFixedAlert(entry.appname, 3.0)
+        showFixedAlert(entry.appname, 2.0)
     end)
 end)
