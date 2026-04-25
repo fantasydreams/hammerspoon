@@ -131,9 +131,14 @@ local function focusScreen(targetScreen)
   end
 end
 
--- 按索引定位光标到指定屏幕
+-- 按索引定位光标到指定屏幕（按系统显示器排列顺序）
 local function focusScreenByIndex(n)
+  -- 获取所有屏幕并按位置排序（从左到右）
   local screens = screen.allScreens()
+  table.sort(screens, function(a, b)
+    return a:fullFrame().x < b:fullFrame().x
+  end)
+  
   if n > #screens then
     alert.show("Only " .. #screens .. " monitors")
     return
