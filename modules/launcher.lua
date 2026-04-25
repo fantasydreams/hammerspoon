@@ -4,15 +4,6 @@ local fnutils = require "hs.fnutils"
 local canvas = require "hs.canvas"
 local screen = require "hs.screen"
 
--- 显示固定位置提示（使用Hammerspoon内置alert）
-local function showFixedAlert(text, duration)
-    -- 设置默认duration为2秒
-    duration = duration or 2.0
-    
-    -- 使用hs.alert显示通知（更简单可靠）
-    hs.alert.show(text, duration)
-end
-
 local applist = {
     {shortcut = 'A', appname = 'Activity Monitor'},  -- Activity A
     {shortcut = 'B', appname = 'CodeBuddy CN'},      -- codebuddy B
@@ -37,6 +28,7 @@ local applist = {
 fnutils.each(applist, function(entry)
     hotkey.bind(CA, entry.shortcut, function()
         application.launchOrFocus(entry.appname)
-        showFixedAlert(entry.appname, 2.0)
+        -- 使用hs.alert显示通知（更简单可靠）
+        hs.alert.show(entry.appname, 2.0)
     end)
 end)
