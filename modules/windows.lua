@@ -5,7 +5,6 @@ local layout   = require "hs.layout"
 local hints    = require "hs.hints"
 local screen   = require "hs.screen"
 local alert    = require "hs.alert"
-local fnutils  = require "hs.fnutils"
 local geometry = require "hs.geometry"
 local mouse    = require "hs.mouse"
 local eventtap = require "hs.eventtap"
@@ -40,7 +39,8 @@ hotkey.bind(CCA, "C",     function() withFocused(function(w) w:centerOnScreen() 
 local frameCache = {}
 
 -- 在窗口销毁时清理 frameCache, 防止长期运行后内存堆积
-local wfDestroy = window.filter.new()
+-- 保留到全局, 避免被 GC 回收导致 filter 失效
+wfDestroy = window.filter.new()
 wfDestroy:subscribe(window.filter.windowDestroyed, function(w)
   if w and w.id and w:id() then frameCache[w:id()] = nil end
 end)
@@ -79,8 +79,8 @@ local lastCursorPos = {}
 -- 判断坐标点是否落在指定屏幕的 frame 范围内
 local function pointInScreen(pt, scr)
   local f = scr:fullFrame()
-  return pt.x >= f.x and pt.x <= (f.x + f.w)
-     and pt.y >= f.y and pt.y <= (f.y + f.h)
+  return pt.x >= f.x and pt.x < (f.x + f.w)
+     and pt.y >= f.y and pt.y < (f.y + f.h)
 end
 
 -- 记录当前鼠标所在屏幕的坐标, 切屏前调用
@@ -93,6 +93,7 @@ local function rememberCurrentCursor()
 end
 
 -- 屏幕变动(拔插/分辨率变化)时, 清理已不存在的 UUID
+-- 保留到全局, 避免被 GC 回收导致 watcher 失效
 screenWatcher = screen.watcher.new(function()
   local alive = {}
   for _, s in ipairs(screen.allScreens()) do alive[s:getUUID()] = true end
@@ -102,18 +103,32 @@ screenWatcher = screen.watcher.new(function()
 end)
 screenWatcher:start()
 
+-- 在指定坐标模拟一次干净的左键点击
+-- 必须显式清空修饰键: hotkey 回调执行时 option 仍处于按下状态,
+-- 否则 macOS 收到的是 option+click 而非普通点击
+local function leftClickAt(pt)
+  local types = eventtap.event.types
+  local down = eventtap.event.newMouseEvent(types.leftMouseDown, pt)
+  local up = eventtap.event.newMouseEvent(types.leftMouseUp, pt)
+  if not down or not up then
+    alert.show("Failed to create mouse event")
+    return
+  end
+
+  down:setFlags({})
+  down:post()
+  up:setFlags({})
+  up:post()
+end
+
+-- 将光标移到目标屏幕(记忆坐标或中心)并原地点击一次
+-- 这里不强制 focus 目标屏幕的最前窗口, 而是让落点处的窗口获得焦点,
+-- 与 option + C 的"原地点击"语义保持一致
 local function focusScreen(targetScreen)
   if not targetScreen then return end
 
   -- 切到新屏幕前, 先记下当前屏幕的鼠标位置
   rememberCurrentCursor()
-
-  -- 找目标屏幕上最前面的窗口
-  local windows = fnutils.filter(window.orderedWindows(), function(w)
-    return w:screen() == targetScreen
-  end)
-  local windowToFocus = #windows > 0 and windows[1] or window.desktop()
-  windowToFocus:focus()
 
   -- 目标屏幕若有记忆坐标且仍在屏幕内, 用记忆坐标; 否则回退到屏幕中心
   local remembered = lastCursorPos[targetScreen:getUUID()]
@@ -125,21 +140,25 @@ local function focusScreen(targetScreen)
   end
   mouse.absolutePosition(pt)
 
-  -- focus 到桌面时, 模拟一次左键点击确保焦点生效
-  if windowToFocus == window.desktop() then
-    eventtap.leftClick(pt)
-  end
+  leftClickAt(pt)
+end
+
+-- 获取所有屏幕并按位置排序(先左右, 同列时再上下)
+-- 供 focusScreenByIndex 与 moveWindowToScreen 共用, 保证 option+N 与 CAS+N 指向同一块屏
+local function orderedScreens()
+  local screens = screen.allScreens()
+  table.sort(screens, function(a, b)
+    local fa, fb = a:fullFrame(), b:fullFrame()
+    if fa.x ~= fb.x then return fa.x < fb.x end
+    return fa.y < fb.y
+  end)
+  return screens
 end
 
 -- 按索引定位光标到指定屏幕（按系统显示器排列顺序）
 local function focusScreenByIndex(n)
-  -- 获取所有屏幕并按位置排序（从左到右）
-  local screens = screen.allScreens()
-  table.sort(screens, function(a, b)
-    return a:fullFrame().x < b:fullFrame().x
-  end)
-  
-  if n > #screens then
+  local screens = orderedScreens()
+  if n < 1 or n > #screens then
     alert.show("Only " .. #screens .. " monitors")
     return
   end
@@ -167,8 +186,8 @@ end)
 ---------------------------------------------------------
 
 local function moveWindowToScreen(win, n)
-  local screens = screen.allScreens()
-  if n > #screens then
+  local screens = orderedScreens()
+  if n < 1 or n > #screens then
     alert.show("Only " .. #screens .. " monitors")
     return
   end
@@ -187,5 +206,5 @@ end
 
 -- option + C: 在当前鼠标位置原地模拟一次左键点击
 hotkey.bind(option, "C", function()
-  eventtap.leftClick(mouse.absolutePosition())
+  leftClickAt(mouse.absolutePosition())
 end)
