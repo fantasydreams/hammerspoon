@@ -10,11 +10,13 @@ local applist = {
     {shortcut = 'C', appname = 'Google Chrome'},     -- Chrome C
     {shortcut = 'D', appname = 'Dash'},              -- Dash D
     {shortcut = 'F', appname = 'Finder'},            -- Finder F
+    {shortcut = 'H', appname = 'DeepSeek Harness'},  -- DeepSeek H
     {shortcut = 'I', appname = 'QQ'},                -- IM I
     {shortcut = 'K', appname = 'iTerm'},             -- iterm K
     {shortcut = 'L', appname = '网易有道翻译'},       -- Lexicon L
     {shortcut = 'M', appname = 'NeteaseMusic'},      -- Music M
     {shortcut = 'N', appname = 'Obsidian'},          -- Note N
+    {shortcut = 'O', appname = 'WorkBuddy'},         -- WorkBuddy O
     {shortcut = 'P', appname = 'Postman'},           -- postman P
     {shortcut = 'Q', appname = 'QQMusic'},           -- QQMusic Q
     {shortcut = 'R', appname = 'UURemote'},          -- remote desktop R
