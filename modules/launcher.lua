@@ -8,9 +8,8 @@ local applist = {
     {shortcut = 'A', appname = 'Activity Monitor'},  -- Activity A
     {shortcut = 'B', appname = 'CodeBuddy CN'},      -- codebuddy B
     {shortcut = 'C', appname = 'Google Chrome'},     -- Chrome C
-    {shortcut = 'D', appname = 'Dash'},              -- Dash D
+    {shortcut = 'D', appname = 'DeepSeek Harness'},  -- DeepSeek dsh D
     {shortcut = 'F', appname = 'Finder'},            -- Finder F
-    {shortcut = 'H', appname = 'DeepSeek Harness'},  -- DeepSeek H
     {shortcut = 'I', appname = 'QQ'},                -- IM I
     {shortcut = 'K', appname = 'iTerm'},             -- iterm K
     {shortcut = 'L', appname = '网易有道翻译'},       -- Lexicon L
